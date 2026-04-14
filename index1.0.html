@@ -1,0 +1,1292 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>平安湾区模拟器-灾害风险</title>
+  <style>
+    :root{
+      --blue-main:#1056BE;
+      --blue-light:#1C74D9;
+      --blue-soft:#E6F1FF;
+      --bg:#F4F7FB;
+      --text-main:#1F2933;
+      --text-sub:#6B7280;
+      --border:#DFE7F5;
+      --card:#FFFFFF;
+      --shadow:0 8px 24px rgba(15,23,42,0.10);
+      --radius:14px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: "Microsoft YaHei", "寰蒋闆呴粦","PingFang SC", "Noto Sans CJK SC",Arial, sans-serif,
+      "Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text-main);
+    }
+    a{ color:inherit; text-decoration:none; }
+
+    /* 整体容器：桌面端 80% 居中，移动端切换为 100% */
+    .page{
+      width:80%;
+      max-width:1440px;
+      margin:0 auto;
+      padding:18px 0 0;
+    }
+
+    /* 第一部分：页面标题 */
+ /* 第一部分：页面标题 */
+   /* CSS 部分 */
+    .page-header{
+      background:#3FB0E8; /* 保留蓝色背景作为底色 */
+      padding:20px 5px;
+      color:#fff;
+      box-shadow:none;
+      text-align: center;
+      position: relative; /* 关键：给子元素绝对定位做参考 */
+      min-height: 20vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden; /* 防止图片超出容器 */
+    }
+
+    /* 新增：背景图片样式 */
+    .header-bg-img{
+      position: absolute; /* 绝对定位，覆盖整个容器 */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 图片覆盖容器，不变形 */
+      opacity: 0.6; /* 图片透明度，让蓝色背景透出来，文字更清晰（0-1之间可调） */
+      z-index: 0; /* 图片在底层 */
+    }
+
+    .page-header h1{
+      margin:0 0 30px 0;
+      font-size:48px;
+      font-weight:700;
+      line-height:1.2;
+      letter-spacing:1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1; /* 文字在图片上层 */
+    }
+
+    .page-header-subtitle{
+      margin:0;
+      font-size:40px;
+      font-family:"Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+      font-weight:700;
+      line-height:1.2;
+      color:#fff;
+      letter-spacing:.2px;
+    }
+    .auth-logout{
+      padding:6px 14px;
+      border:none;
+      border-radius:999px;
+      background:#3FB0E8;
+      color:#ffffff;
+      font-size:12px;
+      font-weight:700;
+      cursor:pointer;
+      line-height:1;
+    }
+
+    /* 第二部分：导航栏，宽度跟随 .page */
+    .nav-bar{
+      margin-top:0;
+      background:#3FB0E8;
+      {#border-radius:15px;#}
+      box-shadow:none;
+      padding:2px 13px;
+      width:100%;
+    }
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      position:relative;
+      max-width:100%;
+      margin:0 auto;
+    }
+
+    /* 一级导航项 */
+    .nav-primary{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .nav-item{
+      position:relative;
+      padding:8px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:600;
+      color:#FFFFFF;
+      border:1px solid transparent;
+      transition:.15s ease;
+      background:transparent;
+      white-space:nowrap;
+    }
+    .nav-item:hover{
+      background:rgba(255,255,255,0.16);
+      border-color:rgba(255,255,255,0.35);
+    }
+    .nav-item.active{
+      background:rgba(255,255,255,0.24);
+      border-color:rgba(255,255,255,0.6);
+    }
+    .nav-link{
+      display:block;
+      color:inherit;
+      text-decoration:none;
+    }
+
+    /* 第三部分：地图展示区，80% 宽度 + 白色背景 */
+    .slider-section{
+      margin:0.5rem auto 0;
+      background:#FFFFFF;
+      border-radius:0px;
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+      padding:0 0 5px;
+      width:80%;
+      max-width:1440px;
+    }
+    .slider-inner{
+      max-width:100%;
+      margin:0 auto;
+      padding:0 0px;
+    }
+    .slider-header{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:0px;
+      padding:0 4px;
+    }
+    .slider-title{
+      font-size:20px;
+      font-weight:700;
+      color:cornflowerblue;
+      text-align:center;
+    }
+    .slider-frame{
+      position:relative;
+      border-radius:12px;
+      overflow:hidden;
+      background:#FFFFFF;
+      padding:0px;
+      border:1px solid var(--border);
+    }
+    .slider-frame img{
+      width:100%;
+      height:auto;
+      max-height:520px;
+      object-fit:contain;
+      display:block;
+      background:#FFFFFF;
+    }
+
+    .slider-arrow{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:40px;
+      height:40px;
+      border-radius:999px;
+      border:none;
+      background:rgba(15,23,42,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      outline:none;
+      transition:.15s ease;
+      color:#fff;
+      font-size:20px;
+      z-index:20;
+    }
+    .slider-arrow:hover{
+      background:rgba(15,23,42,.38);
+    }
+    .slider-arrow.prev{ left:14px; }
+    .slider-arrow.next{ right:14px; }
+
+    .slider-dots{
+      position:absolute;
+      bottom:10px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:6px;
+      z-index:20;
+    }
+    .slider-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:rgba(0,0,0,.2);
+      cursor:pointer;
+    }
+    .slider-dot.active{
+      background:var(--blue-main);
+      box-shadow:0 0 0 2px rgba(15,23,42,.25);
+    }
+
+    /* 第四部分：LLM 区域，80% 宽度 */
+    .llm-wrap{
+      width:80%;
+      max-width:1440px;
+      margin:0.5rem auto 24px;
+      padding:0;
+    }
+    .llm-section{
+      background:var(--card);
+      border-radius:0px;
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+      overflow:hidden;
+      padding:0 0 16px;
+    }
+    .llm-inner{
+      max-width:100%;
+      margin:0 auto;
+      padding:0 16px;
+    }
+    .llm-header{
+      padding:10px 0;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .llm-title{
+      font-size:14px;
+      font-weight:700;
+      color:var(--text-main);
+    }
+    .llm-badge{
+      font-size:12px;
+      color:#0F172A;
+      background:var(--blue-soft);
+      border-radius:999px;
+      padding:4px 10px;
+      border:1px solid var(--border);
+    }
+    .llm-body{
+      height:320px;
+      padding-top:8px;
+    }
+    .llm-body iframe{
+      width:100%;
+      height:100%;
+      border:none;
+      display:block;
+    }
+
+    /* 右下角图例：覆盖在 iframe 上方 */
+    .map-legend{
+      position:absolute;
+      right:0px;
+      bottom:10px;
+      z-index:30;                 /* 需要高于 iframe 和角标 */
+      padding:0px;
+      display:none;               /* 默认隐藏，切换到风险图时再显示 */
+      pointer-events:none;        /* 不阻挡地图拖拽和缩放 */
+    }
+    .map-legend img{
+      display:block;
+      max-width:220px;            /* 可按需要继续调大或调小 */
+      width:110px;
+      height:auto;
+    }
+    @media (max-width: 768px){
+      .map-legend img{
+        width:160px;
+        max-width:160px;
+      }
+    }
+    /* 移动端：宽度改为 100%，便于浏览 */
+    @media (max-width: 768px){
+      .page,
+      .slider-section,
+      .llm-wrap{
+        width:100%;
+      }
+      .nav-inner{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .slider-inner{
+        padding:0 10px;
+      }
+      .slider-frame img{
+        max-height:300px;
+      }
+      .llm-inner{
+        padding:0 10px;
+      }
+      .llm-body{
+        height:480px;
+      }
+    }
+
+    /* 第四部分：AI 对话区，80% 宽度，不遮挡版权栏 */
+    .chat-wrap{
+      width:80%;
+      max-width:1440px;
+      margin:8px auto 8px;   /* 底部留出与版权栏的间距 */
+      padding:0;
+    }
+    .chat-section{
+      background:var(--card);
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+      overflow:hidden;
+    }
+    .chat-header{
+      padding:10px 14px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .chat-title{
+      font-size:14px;
+      font-weight:700;
+      color:var(--text-main);
+    }
+    .chat-body{
+      height:320px;
+      display:flex;
+      flex-direction:column;
+    }
+    .chat-messages{
+      flex:1;
+      overflow:auto;
+      padding:12px;
+      background:#FFFFFF;
+      scroll-behavior:smooth;
+    }
+    .chat-inputbar{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px;
+      border-top:1px solid var(--border);
+      background:#FFFFFF;
+      position:sticky;
+      bottom:0;
+    }
+    .chat-input{
+      flex:1;
+      height:40px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:0 12px;
+      outline:none;
+      font-size:14px;
+    }
+    .chat-input:focus{
+      border-color:rgba(16,86,190,.55);
+      box-shadow:0 0 0 3px rgba(16,86,190,.15);
+    }
+    .chat-send,.chat-clear{
+      height:40px;
+      border-radius:10px;
+      border:1px solid rgba(16,86,190,.35);
+      background:rgba(16,86,190,.08);
+      color:var(--blue-main);
+      font-weight:700;
+      padding:0 14px;
+      cursor:pointer;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .chat-send:hover,.chat-clear:hover{
+      background:rgba(16,86,190,.14);
+      border-color:rgba(16,86,190,.55);
+    }
+
+    @media (max-width: 768px){
+
+      /* 输入区整体更紧凑 */
+      .chat-input-area{
+        padding: 8px 10px !important;
+        gap: 8px !important;
+      }
+
+      /* 改为两行：输入一行，按钮一行 */
+      .chat-input-row{
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+      }
+
+      /* 输入框：全宽，避免过高 */
+      .chat-input-row textarea,
+      .chat-input-row input[type="text"],
+      .chat-input-row .chat-input{
+        width: 100% !important;
+        min-height: 40px !important;
+        max-height: 96px !important;   /* 防止输入框被撑得太高 */
+        line-height: 1.4 !important;
+        font-size: 14px !important;
+        padding: 10px 12px !important;
+        resize: none !important;       /* 移动端保持稳定 */
+      }
+
+      /* 按钮区：同一行排列，可换行 */
+      .chat-actions{
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        justify-content: flex-end !important;
+      }
+
+      /* 按钮：不再被挤压，最小宽度保持一致 */
+      .chat-actions button,
+      .chat-actions .btn{
+        flex: 0 0 auto !important;
+        min-width: 92px !important;
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+        border-radius: 10px !important;
+      }
+
+      /* 如果有“发送 / 清空”两个按钮，强制等宽更整齐 */
+      .chat-actions .btn-send,
+      .chat-actions .btn-clear{
+        width: calc(50% - 4px) !important; /* 两个按钮正好并排一行 */
+        min-width: 0 !important;
+      }
+
+      /* 对话列表区域：预留空间，避免被输入区遮挡 */
+      .chat-messages{
+        padding-bottom: 140px !important;
+      }
+    }
+
+    /* 3) <569px：进一步压缩输入区，确保按钮可见 */
+    @media (max-width: 569px){
+
+      /* chatBox 底部预留足够空间，避免遮挡 */
+      .chat-messages{
+        padding-bottom: 120px !important;
+      }
+
+      /* 输入区更紧凑 */
+      .chat-input-area{
+        padding: 8px 10px !important;
+        gap: 8px !important;
+      }
+
+      /* 输入框避免过高 */
+      .chat-input-row textarea,
+      .chat-input-row .chat-input{
+        min-height: 38px !important;
+        max-height: 72px !important;   /* 进一步缩短高度 */
+        font-size: 14px !important;
+        padding: 8px 10px !important;
+        resize: none !important;
+      }
+
+      /* 按钮区：强制并排显示，不被挤掉 */
+      .chat-actions{
+        display: flex !important;
+        gap: 8px !important;
+        flex-wrap: nowrap !important;
+      }
+
+      /* 发送 / 清空：各占 50%，保证完整显示 */
+      .chat-actions .btn-send,
+      .chat-actions .btn-clear{
+        width: 50% !important;
+        min-width: 0 !important;
+        padding: 10px 8px !important;
+        font-size: 13px !important;
+      }
+    }
+
+
+
+/* 第五部分：版权说明，颜色与导航栏一致 */
+    .copyright-wrap{
+      width:80%;
+      max-width:1440px;
+      margin:8px auto 4px;
+      padding:0;
+      margin-top:1px;  /* 轻微上移，消除视觉空隙 */
+    }
+    .copyright-bar{
+      background:#037EDC;      /* 与导航栏保持一致 */
+      color:#FFFFFF;
+      box-shadow:var(--shadow);
+      padding:1px 16px;
+      font-size:13px;
+      line-height:1.7;
+    }
+    .copyright-bar div{
+      white-space:normal;
+      word-break:break-word;
+      text-align: center;
+    }
+    @media (max-width: 768px){
+      .copyright-wrap{ width:100%; margin:0 auto 2px;}
+      .copyright-bar{ border-radius:0; }
+    }
+
+    /* 最新点位提示：查询到点位后显示 */
+    .point-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(3,126,220,.10);
+      border:1px solid rgba(3,126,220,.35);
+      color:#0B3C86;
+      font-size:13px;
+      font-weight:700;
+      margin:6px auto 0;
+      max-width: 100%;
+    }
+    .point-badge .dot{
+      width:10px;height:10px;border-radius:50%;
+      background:#ff3b30;
+      box-shadow:0 0 0 0 rgba(255,59,48,.55);
+      animation:pulse 1.2s infinite;
+      flex:0 0 auto;
+    }
+    .point-badge .txt{
+      font-weight:700;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .query-loading-mask{
+      position: fixed;
+      top: 0;
+      left: 0;
+      transform: translate(-50%, 0);
+      display: none;
+      width: auto;
+      height: auto;
+      background: transparent;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .query-loading-mask.show{
+      display: flex;
+    }
+    .query-loading-dialog{
+      min-width: 108px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.78);
+      box-shadow: 0 10px 22px rgba(15,23,42,0.12);
+      color: #0B3C86;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .5px;
+      border: 1px solid rgba(3,126,220,.18);
+      backdrop-filter: blur(6px);
+    }
+    .query-loading-dialog::before{
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 6px;
+      border: 2px solid rgba(3,126,220,.18);
+      border-top-color: #037EDC;
+      border-radius: 50%;
+      vertical-align: -2px;
+      animation: querySpin .8s linear infinite;
+    }
+    @keyframes querySpin{
+      to{ transform: rotate(360deg); }
+    }
+    .chat-input:disabled,
+    .chat-send:disabled,
+    .chat-clear:disabled{
+      opacity: .65;
+      cursor: not-allowed;
+    }
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(255,59,48,.55); }
+      70%{ box-shadow:0 0 0 10px rgba(255,59,48,0); }
+      100%{ box-shadow:0 0 0 0 rgba(255,59,48,0); }
+    }
+    /* 1) 移动端 <768px：AI 区域全宽 */
+    @media (max-width: 768px){
+      .auth-logout{
+        font-size:11px;
+        padding:5px 8px;
+      }
+      .llm-wrap,
+      .llm-section,
+      .llm-inner,
+      .chat-wrap,        /* 当前使用的聊天外层 */
+      .chat-container{   /* 兼容另一种命名 */
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      /* 保留少量左右内边距，如需贴边可改为 0 */
+      .llm-inner,
+      .chat-container{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+    }
+
+
+    .page-header{
+      padding:5px 5px;
+    }
+    .page-header h1{
+      margin:0px 25px 4px;
+      font-size:40px;
+      font-weight:700;
+      line-height:1.2;
+      letter-spacing:.5px;
+    }
+    .nav-item{
+      padding:8px 14px;
+      font-size:15px;
+    }
+    .footer-auth{
+      width:80%;
+      max-width:1440px;
+      margin:0 auto;
+      padding:0 12px 6px;
+    }
+    .footer-auth-inner{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      flex-wrap:wrap;
+      color:#0C3D83;
+      font-size:12px;
+      font-weight:500;
+      text-align:center;
+      line-height:1;
+    }
+    .footer-auth-text{
+      line-height:1;
+      display:inline-block;
+    }
+    .map-legend{
+      right:16px;
+      bottom:14px;
+      padding:8px;
+      background:rgba(255, 247, 224, 0.92);
+      border:1px solid rgba(90, 67, 22, 0.16);
+      border-radius:12px;
+      box-shadow:0 10px 28px rgba(15,23,42,.18);
+    }
+    .map-legend img{
+      width:min(220px, 24vw);
+      min-width:120px;
+      max-width:220px;
+    }
+    @media (max-width: 768px){
+      .map-legend img{
+        width:140px;
+        max-width:140px;
+        min-width:auto;
+      }
+    }
+  </style>
+</head>
+<body>
+{% now "Ymd_His" as cache_bust %}
+<div class="page">
+      <!-- 模板顶部必须加这行，加载静态文件标签 -->
+    {% load static %}
+    <!-- 正确的结构：只保留一层page-header -->
+    <header class="page-header">
+      <!-- 核心修改：用Django static标签引用图片 -->
+      <img src="{% static 'images/bg.jpg' %}" alt="背景图" class="header-bg-img">
+
+      <h1>平安湾区模拟器-灾害风险</h1>
+      <!-- 如果你要加副标题，取消下面的注释 -->
+      <!-- <p class="page-header-subtitle">Greater Bay Area Safety Simulator - Disaster Risk</p> -->
+    </header>
+</div>
+
+
+
+
+<!-- 第三部分：风险地图展示区 -->
+{% load static %}
+<section class="slider-section">
+<div class="slider-inner">
+<div class="slider-frame">
+  <iframe
+    id="mapFrame"
+    src="{% url 'landslide_map' %}?v={{ cache_bust }}"
+    title="风险地图"
+    style="width:100%;height:520px;border:none;display:block;"
+  ></iframe>
+</div>
+</div>
+</section>
+
+  <!-- 第四部分：AI 对话区，输入栏固定在底部 -->
+  <div class="chat-wrap">
+    <section class="chat-section" aria-label="AI 对话区">
+      <div class="chat-header">
+        <div class="chat-title">AI助手</div>
+      </div>
+
+      <div class="chat-body">
+        <!-- 消息区：内容在上方滚动 -->
+        <div id="chatBox" class="chat-messages" aria-live="polite"></div>
+
+        <!-- 输入区：始终贴在 chat-body 底部，不遮挡版权栏 -->
+        <div class="chat-inputbar">
+          <input id="chatInput" class="chat-input" placeholder="请输入地点或详细地址，例如：广东省广州市海珠区中山大学" />
+          <button id="sendBtn" class="chat-send">发送</button>
+          <button id="clearBtn" class="chat-clear">清空</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div id="queryLoadingMask" class="query-loading-mask" aria-hidden="true">
+    <div class="query-loading-dialog">查询中，请稍候...</div>
+  </div>
+
+<!-- 第五部分：版权说明 -->
+<div class="copyright-wrap">
+  <div class="copyright-bar">
+    <div>主办单位：广东工业大学粤港澳大湾区防灾减灾研究院</div>
+    <div>广东工业大学粤港澳大湾区防灾减灾研究院版权所有 COPYRIGHT 2026 All Rights Reserved.</div>
+  </div>
+</div>
+<div class="footer-auth">
+  <div class="footer-auth-inner">
+    <div class="footer-auth-text">
+      欢迎您，
+      {% if request.user.is_authenticated %}
+        {{ request.user.username }}！
+      {% else %}
+        游客！
+      {% endif %}
+    </div>
+    {% if request.user.is_authenticated %}
+    <form method="post" action="{% url 'logout_view' %}" style="margin:0;">
+      {% csrf_token %}
+      <button type="submit" class="auth-logout">注销</button>
+    </form>
+    {% if request.user.is_staff or request.user.is_superuser %}
+    <a href="{% url 'management_page' %}" class="auth-logout" style="text-decoration:none;">管理</a>
+    {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  const sliderConfigs = [
+    {
+      title: "地质灾害风险",
+      src: "{% url 'landslide_map' %}?v={{ cache_bust }}",
+      legend: true,
+      hazard: "landslide"
+    },
+    {
+      title: "洪涝灾害风险",
+      src: "{% url 'flood_map' %}?v={{ cache_bust }}",
+      legend: true,
+      hazard: "flood"
+    },
+    {
+      title: "大风灾害风险",
+      src: "{% url 'wind_map' %}?v={{ cache_bust }}",
+      legend: true,
+      hazard: "wind"
+    }
+  ];
+
+  const mapFrame = document.getElementById("mapFrame");
+
+  let currentIndex = 0;
+
+  function updateSlider() {
+    const cfg = sliderConfigs[currentIndex];
+    if (mapFrame) mapFrame.src = cfg.src;
+    if (typeof lastPayload !== "undefined" && lastPayload && typeof updateBadge === "function") {
+      updateBadge(lastPayload);
+    }
+  }
+
+  updateSlider();
+</script>
+<script>
+  (function() {
+    // 记录当前滚动位置
+    let lastScrollY = window.scrollY;
+
+    // 页面滚动时更新记录
+    window.addEventListener('scroll', function () {
+      lastScrollY = window.scrollY;
+    });
+
+    const aiIframe = document.getElementById('aiFrame');
+    if (!aiIframe) return;
+
+    // 当 iframe 加载完成后，尽量恢复到之前的滚动位置
+    aiIframe.addEventListener('load', function () {
+      const targetY = lastScrollY;  // 通常首页顶部时会是 0
+      const restore = function () {
+        window.scrollTo(0, targetY);
+      };
+
+      // 先立即恢复一次
+      restore();
+      // 再延迟恢复几次，避免 iframe 内部再次触发滚动
+      setTimeout(restore, 50);
+      setTimeout(restore, 150);
+      setTimeout(restore, 300);
+    });
+  })();
+</script>
+
+
+
+<script>
+  const latestPointApiUrl = "{% url 'latest_point' %}";
+  const chatApiUrl = "{% url 'api_chat' %}";
+  /**
+   * 方案二（HTML 侧）：
+   * index 轮询 Django 的 latest_point 接口，再通过 postMessage 通知地图 iframe 打点。
+   * 参考返回示例：
+   * GET /api/latest_point -> {"ok":true,"id":"20260205T120001Z","place":"中山大学","longitude":113.30,"latitude":23.10,"risk_level":"三级风险","legend":true}
+   * 说明：
+   * - id 用于去重，点位未变化时不重复打点
+   * - legend=true 时联动显示图例
+   */
+  const mapFrameEl = document.getElementById("mapFrame");
+  const badgeEl = document.getElementById("latestPointBadge");
+  const badgeTextEl = document.getElementById("latestPointText");
+
+  let lastPointId = null;
+  let lastPayload = null;
+
+  function postToMap(payload){
+    if (!mapFrameEl || !mapFrameEl.contentWindow) return;
+    // 当前显示的地图与查询出的灾害类型不一致时，不在地图上打点
+    if (typeof currentIndex !== 'undefined' && sliderConfigs[currentIndex]) {
+      const currentCfg = sliderConfigs[currentIndex];
+      if (payload.hazard && currentCfg.hazard && payload.hazard !== currentCfg.hazard) {
+        return;
+      }
+    }
+    mapFrameEl.contentWindow.postMessage(
+      { type: "SET_POINT", payload },
+      window.location.origin
+    );
+  }
+
+  function updateBadge(payload){
+    if (!badgeEl || !badgeTextEl) return;
+    // 如果灾害类型不匹配，则隐藏顶部定位提示
+    if (typeof currentIndex !== 'undefined' && sliderConfigs[currentIndex]) {
+      const currentCfg = sliderConfigs[currentIndex];
+      if (payload.hazard && currentCfg.hazard && payload.hazard !== currentCfg.hazard) {
+        badgeEl.style.display = "none";
+        return;
+      }
+    }
+    const place = payload.place || "目标点";
+    const lon = Number(payload.longitude).toFixed(6);
+    const lat = Number(payload.latitude).toFixed(6);
+    const level = payload.risk_level ? ` 路 ${payload.risk_level}` : "";
+    badgeTextEl.textContent = `已定位：${place}（${lon}, ${lat}）${level}`;
+    badgeEl.style.display = "inline-flex";
+  }
+
+  async function pollLatestPoint(){
+    try{
+      const resp = await fetch(latestPointApiUrl, { cache: "no-store" });
+      if(!resp.ok) return;
+      const data = await resp.json();
+      if(!data || !data.ok) return;
+
+      if(data.id && data.id === lastPointId) return;
+
+      lastPointId = data.id || (Date.now() + "");
+      lastPayload = data;
+
+      updateBadge(data);
+      postToMap(data);
+    }catch(e){
+      // 静默失败
+    }
+  }
+
+  setInterval(pollLatestPoint, 2000);
+  pollLatestPoint();
+
+  if(mapFrameEl){
+    mapFrameEl.addEventListener("load", function(){
+      if(lastPayload) postToMap(lastPayload);
+    });
+  }
+</script>
+<script>
+(function () {
+  // ====== 聊天 UI 元素 ======
+  const chatBox = document.getElementById("chatBox");
+  const chatInput = document.getElementById("chatInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const queryLoadingMask = document.getElementById("queryLoadingMask");
+  const chatSection = document.querySelector(".chat-section");
+  const chatHeader = document.querySelector(".chat-header");
+  let isSending = false;
+if (!chatBox || !chatInput || !sendBtn) {
+    console.warn("chat UI elements missing: chatBox/chatInput/sendBtn");
+    return;
+  }
+
+  function positionQueryLoading() {
+    if (!queryLoadingMask || !chatSection) return;
+    const anchorEl = chatHeader || chatSection;
+    const rect = anchorEl.getBoundingClientRect();
+    const left = rect.left + rect.width / 2;
+    const top = rect.top + 8;
+    queryLoadingMask.style.left = `${left}px`;
+    queryLoadingMask.style.top = `${Math.max(top, 12)}px`;
+  }
+
+  function setQueryLoading(loading) {
+    isSending = !!loading;
+    chatInput.disabled = isSending;
+    sendBtn.disabled = isSending;
+    if (clearBtn) clearBtn.disabled = isSending;
+    if (queryLoadingMask) {
+      const loadingText = queryLoadingMask.querySelector(".query-loading-dialog");
+      if (loadingText) loadingText.textContent = "查询中...";
+      positionQueryLoading();
+      queryLoadingMask.classList.toggle("show", isSending);
+      queryLoadingMask.setAttribute("aria-hidden", isSending ? "false" : "true");
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+  function addMsg(text, role) {
+    const div = document.createElement("div");
+    div.style.margin = "6px 0";
+    div.style.display = "flex";
+    div.style.justifyContent = role === "user" ? "flex-end" : "flex-start";
+
+    const bubble = document.createElement("div");
+    bubble.style.maxWidth = "85%";
+    bubble.style.padding = "8px 10px";
+    bubble.style.borderRadius = "10px";
+    bubble.style.lineHeight = "1.5";
+    bubble.style.fontSize = "14px";
+    bubble.style.whiteSpace = "pre-wrap";
+    bubble.style.wordBreak = "break-word";
+    bubble.style.border = "1px solid #e5e7eb";
+
+    if (role === "user") {
+      bubble.style.background = "rgba(3,126,220,0.10)";
+    } else {
+      bubble.style.background = "#fff";
+    }
+
+    bubble.innerHTML = escapeHtml(text);
+    div.appendChild(bubble);
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // ====== 与后端对话 ======
+  let conversationId = null;
+
+async function sendMessage() {
+  if (isSending) return;
+  const inputEl = document.getElementById("chatInput");
+  const text = (inputEl.value || "").trim();
+  if (!text) return;
+
+  addMsg(text, "user");
+  inputEl.value = "";
+  setQueryLoading(true);
+
+  try {
+    const resp = await fetch(chatApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        message: text,
+        user: "web-user"
+      })
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok || !data.ok) {
+        throw new Error(data.error || "查询失败");
+    }
+
+    addMsg(data.reply || "查询完成", "assistant");
+
+    // AI 根据返回的灾害类型自动切换地图
+    if (data.hazard_type && typeof sliderConfigs !== "undefined") {
+      const targetIdx = sliderConfigs.findIndex(cfg => cfg.hazard === data.hazard_type);
+      // 找到对应地图且当前未显示时，自动切换
+      if (targetIdx !== -1 && targetIdx !== currentIndex) {
+        currentIndex = targetIdx;
+        updateSlider(); // 触发地图切换
+      }
+    }
+    // ====================================================================
+
+    if (
+      data.place &&
+      typeof data.longitude === "number" &&
+      typeof data.latitude === "number"
+    ) {
+      const payload = {
+        place: data.place,
+        longitude: data.longitude,
+        latitude: data.latitude,
+        risk_level: data.risk_level || "",
+          hazard: data.hazard_type || "", // 带上灾害类型，供前面的拦截逻辑使用
+          clip_url: data.clip_url || ""   // 👈 新增这行！一定要加上逗号
+      };
+
+      lastPayload = payload;
+
+      if (typeof updateBadge === "function") {
+        updateBadge(payload);
+      }
+      if (typeof postToMap === "function") {
+        postToMap(payload);
+      }
+    }
+
+  } catch (err) {
+    console.error("sendMessage error:", err);
+    addMsg("地点查询失败，可联系管理员", "assistant");
+  } finally {
+    setQueryLoading(false);
+    chatInput.focus();
+  }
+}
+
+
+  sendBtn.addEventListener("click", sendMessage);
+  clearBtn.addEventListener("click", function(){
+    if (isSending) return;
+    chatBox.innerHTML = "";
+    chatInput.value = "";
+    chatInput.focus();
+  });
+  chatInput.addEventListener("keydown", function (e) {
+    if (isSending && e.key === "Enter") {
+      e.preventDefault();
+      return;
+    }
+    if (e.key === "Enter") sendMessage();
+  });
+
+  window.addEventListener("resize", positionQueryLoading);
+  window.addEventListener("scroll", positionQueryLoading, { passive: true });
+
+  // ====== 轮询最新点位：同步到 iframe 地图和顶部提示 ======
+  const mapFrameEl = document.getElementById("mapFrame");
+  const badgeEl = document.getElementById("latestPointBadge");
+  const badgeTextEl = document.getElementById("latestPointText");
+
+  let lastPointId = null;
+  let lastPayload = null;
+
+  function postToMap(payload) {
+    if (!mapFrameEl || !mapFrameEl.contentWindow) return;
+    // 当前显示的地图与查询出的灾害类型不一致时，不在地图上打点
+    if (typeof currentIndex !== 'undefined' && sliderConfigs[currentIndex]) {
+      const currentCfg = sliderConfigs[currentIndex];
+      if (payload.hazard && currentCfg.hazard && payload.hazard !== currentCfg.hazard) {
+        return;
+      }
+    }
+    // 同源场景下，直接使用 window.location.origin 即可
+    mapFrameEl.contentWindow.postMessage({ type: "SET_POINT", payload }, window.location.origin);
+  }
+
+  function updateBadge(payload) {
+    if (!badgeEl || !badgeTextEl) return;
+    // 如果灾害类型不匹配，则隐藏顶部定位提示
+    if (typeof currentIndex !== 'undefined' && sliderConfigs[currentIndex]) {
+      const currentCfg = sliderConfigs[currentIndex];
+      if (payload.hazard && currentCfg.hazard && payload.hazard !== currentCfg.hazard) {
+        badgeEl.style.display = "none";
+        return;
+      }
+    }
+    const place = payload.place || "目标点";
+    const lon = Number(payload.longitude).toFixed(6);
+    const lat = Number(payload.latitude).toFixed(6);
+    const level = payload.risk_level ? ` 路 ${payload.risk_level}` : "";
+    badgeTextEl.textContent = `已定位：${place}（${lon}, ${lat}）${level}`;
+    badgeEl.style.display = "inline-flex";
+  }
+
+  async function pollLatestPoint() {
+    try {
+      const resp = await fetch(latestPointApiUrl, { cache: "no-store" });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      if (!data || !data.ok) return;
+
+      if (data.id && data.id === lastPointId) return;
+      lastPointId = data.id || String(Date.now());
+      lastPayload = data;
+
+      updateBadge(data);
+      postToMap(data);
+    } catch (e) {
+      // 静默失败
+    }
+  }
+
+  setInterval(pollLatestPoint, 2000);
+  pollLatestPoint();
+
+  if (mapFrameEl) {
+    mapFrameEl.addEventListener("load", function () {
+      if (lastPayload) postToMap(lastPayload);
+    });
+  }
+
+})();
+</script>
+<script>
+  async function queryAddressAndShowRisk(addressText) {
+    const text = (addressText || "").trim();
+    if (!text) {
+      alert("璇疯緭鍏ュ湴鐐规垨鍦板潃");
+      return;
+    }
+
+    try {
+      // 1. 地理编码
+      const geoResp = await fetch(`/api/geocode/?address=${encodeURIComponent(text)}`, {
+        method: "GET",
+        credentials: "same-origin"
+      });
+      const geoData = await geoResp.json();
+
+      if (!geoResp.ok || !geoData.ok) {
+        throw new Error(geoData.error || "鍦扮悊缂栫爜澶辫触");
+      }
+
+      const place = geoData.place || text;
+      const longitude = Number(geoData.longitude);
+      const latitude = Number(geoData.latitude);
+
+      if (!isFinite(longitude) || !isFinite(latitude)) {
+        throw new Error("杩斿洖鍧愭爣鏃犳晥");
+      }
+
+      // 2. 风险计算
+      const riskResp = await fetch(`/risk/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "my-secret-123"
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          longitude: longitude,
+          latitude: latitude
+        })
+      });
+
+      const riskData = await riskResp.json();
+
+      if (!riskResp.ok || !riskData.ok) {
+        throw new Error(riskData.error || "椋庨櫓璁＄畻澶辫触");
+      }
+
+      const riskLevel = riskData.risk_level || "";
+      const riskValue = riskData.risk_value;
+
+      // 3. 写入 latest point，供地图和前端轮询使用
+      const hookResp = await fetch(`/api/dify_hook`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          place: place,
+          longitude: longitude,
+          latitude: latitude,
+          risk_level: riskLevel,
+          legend: true
+        })
+      });
+
+      const hookData = await hookResp.json();
+      if (!hookResp.ok || !hookData.ok) {
+        throw new Error(hookData.error || "鐐逛綅鍐欏叆澶辫触");
+      }
+
+      // 4. 立即在聊天区显示结果
+      const msg = [
+        `鍦扮偣锛?{place}`,
+        `缁忓害锛?{longitude}`,
+        `绾害锛?{latitude}`,
+        `椋庨櫓绛夌骇锛?{riskLevel}`,
+        (riskValue !== undefined && riskValue !== null) ? `椋庨櫓鍊硷細${riskValue}` : null
+      ].filter(Boolean).join("<br>");
+
+      addMsg(msg, "assistant");
+
+      // 5. 可选：立即刷新顶部状态和地图，而不是等待轮询
+      const payload = {
+        place: place,
+        longitude: longitude,
+        latitude: latitude,
+        risk_level: riskLevel
+      };
+
+      updateBadge(payload);
+      postToMap(payload);
+
+    } catch (err) {
+      console.error(err);
+      addMsg("地点查询失败，可联系管理员", "assistant");
+    }
+  }
+</script>
+</body>
+</html>
+
